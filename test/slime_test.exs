@@ -12,4 +12,8 @@ defmodule SlimeTest do
   test "dynamic output with =" do
     assert Slime.to_html("= 1 + 1") == "2"
   end
+
+  test "html tags" do
+    assert Slime.to_html("p") == "<p></p>"
+  end
 end
