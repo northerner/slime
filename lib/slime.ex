@@ -1,22 +1,11 @@
 defmodule Slime do
   def to_html(string) do
-    string
-    |> parse
-    |> Code.eval_quoted
-    |> (fn {result, _} -> result end).()
+    string |> parse |> EEx.eval_string 
   end
 
-  def parse(string) do
-    case String.codepoints(string) do
-      ["|" | text] -> strip_line(string)
-      ["<" | _] -> string
-      ["=" | expression] -> strip_line(string) |> Code.eval_string
-    end
-  end
+  def parse(<<"| " :: binary, text :: binary>>), do: text
+  def parse(<<"= " :: binary, expression :: binary>>), do: to_eex(expression) 
+  def parse(html_string), do: html_string
 
-  defp strip_line(line) do
-    line
-    |> String.slice(2..-1) 
-    |> String.strip
-  end
+  defp to_eex(expression), do: "<%= #{expression} %>"
 end
