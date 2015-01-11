@@ -8,7 +8,15 @@ defmodule Slime do
 
   def parse(string) do
     case String.codepoints(string) do
-      ["|" | text] -> Enum.join(text) |> String.strip
+      ["|" | text] -> strip_line(string)
+      ["<" | _] -> string
+      ["=" | expression] -> strip_line(string) |> Code.eval_string
     end
+  end
+
+  defp strip_line(line) do
+    line
+    |> String.slice(2..-1) 
+    |> String.strip
   end
 end
